@@ -135,4 +135,3 @@ for(i in 1:NROW(table)){
 }
 
 write.csv(table, 'table_2.csv', row.names = F)
-write.csv(table, 'UnmatchedAEs.csv', row.names = F)
