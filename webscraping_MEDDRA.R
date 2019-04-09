@@ -134,4 +134,5 @@ for(i in 1:NROW(table)){
   print(i)
 }
 
-write.csv(table, 'table_2.csv', row.names = F)
+### Save the table as a CSV file
+write.csv(table, 'UnmatchedAEs.csv', row.names = F)
