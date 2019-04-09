@@ -1,1 +1,1 @@
-# AE_BayesianModeling
+# VAX project
