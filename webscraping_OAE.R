@@ -21,3 +21,14 @@ for(i in 0:(length(text)/3-1)){
 }
 
 write.csv(table, file="webpage2.csv", row.names=F)
+
+
+#### Duplicates
+
+dup_idx = duplicated(table$Name)
+dup_names = table[dup_idx,'Name']
+
+dup_row_idx = table$Name %in% dup_names
+duplicates = table[dup_row_idx,]
+
+write.csv(duplicates, 'OAE_duplicate_list.csv', row.names = F)
