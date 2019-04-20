@@ -8,5 +8,5 @@
 In VAERS data, there is no coulumn for the MEDDRA ID and some AE names have old names. We did a web scraping to clean this data. The output data 'meddra_ptlist.csv' has the pairs of (old names in VAERS data, with corresponding MEDDRA ID) and (Formal=new name, with corresponding MEDDRA ID).
 - Input data: VAERSSYMPOM data (2000~2018), [BioPortal HTML source](http://bioportal.bioontology.org/ontologies/MEDDRA/?p=classes&conceptid=root), [RESTful API](http://data.bioontology.org/documentation#nav_home)
 - R code: CleaningMeddraTerms.R
-- Output data: meddra_ptlist.csv
+- Output data: meddra_ptlist.csv (AE_NAME: AE names in VAERS; ID: MeDDRA ID for AE_NAME; MEDDRA_AE_NAME: new name with MEDDRA_ID)
 
