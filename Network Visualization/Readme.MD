@@ -3,4 +3,4 @@ A network visualization for a presentation. The example output represents the ne
 
 - Input: ddall.csv - 'PT-HLGT-SOG structure' of Meddra Terms
 - R code: NetworkVisualization.R
-- Output: netVis.html
+- Output: [Example Output]('https://shnlee-ds.github.io/netVis.html')
