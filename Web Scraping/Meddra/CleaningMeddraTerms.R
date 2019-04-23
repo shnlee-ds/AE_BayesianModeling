@@ -14,7 +14,7 @@ for (k in 1:length(year)){
   tmp=read.csv(paste('VAERS data/', year[k],"VAERSSYMPTOMS",".csv",sep=""))
   tmp=tmp[,c("VAERS_ID","SYMPTOM1","SYMPTOM2","SYMPTOM3","SYMPTOM4","SYMPTOM5")]
   tmp[tmp==""] = NA
-  tmp.long=melt(tmp, id.vars = c('VAERS_ID'), measure.vars = 2:5, na.rm = T, value.name = "AE_NAME")
+  tmp.long=melt(tmp, id.vars = c('VAERS_ID'), measure.vars = 2:6, na.rm = T, value.name = "AE_NAME")
   dd_ae[[k]]=tmp.long
   dd_ae[[k]]$year=year[k]
 }
