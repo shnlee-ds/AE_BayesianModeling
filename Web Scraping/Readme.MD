@@ -5,7 +5,12 @@
 - Output data: Webpage_OAE.csv, OAE_duplicates.csv
 
 #### 2. Meddra
-In VAERS data, there is no coulumn for the MEDDRA ID and some AE names have old names. We did a web scraping to clean this data. The output data 'meddra_ptlist.csv' has the pairs of (old names in VAERS data, with corresponding MEDDRA ID) and (Formal=new name, with corresponding MEDDRA ID).
+In VAERS data, we have the names of the adverse effect(AE), but not their corresponding ID information. In addition, some of AE names in VAERS data are the old version or the informal version in terms of MedDRA standard. Thus, we implemented a web scraping process for cleaning these names into the current and formal version and for gathering their MedDRA ID. For the implementation, we gathered the data directly from BioPortal HTML source or using RESTful API which is provided for free from BioPortal.
+
+First, we filtered out the AE names which are matched in our reference data (ddall.csv; the ontology structure data). Since we already have the MedDRA ID of the matched AE names in the reference data, we just saved the names and their ID into an empty list (meddra_ptlist.csv). In case of the unmatched AEs, we searched their name on BioPortal using RESTful API and gathered the corresponding MedDRA ID, and saved them into 'meddra_ptlist.csv'.
+
+Now we have the "meddra_ptlist.csv" which has the information of the AE names from VAERS data, and their MedDRA ID. However, one should note that VAERS data has been recorded over from 2000 to 2018. In this long period, the ontology structure and formal name of MedDRA terminologies may have changed; thus, we have to update each AE terms to the current and formal one. In BioPortal, one can find the field names "Classified as" or "classifies" which describe the relationship between the old names and the new name of a specific MedDRA terminology. For example,  if there is the "Classified as" field in the page of a specific term B and the data of this field is A, A is the current formal MedDRA name of B. Furthermore, one can find the "classifies" field from the page of the current formal name such as A which has the list of its old names. Using such structure from BioPortal HTML source, we added the columns for the updated current AE names and their MedDRA ID.
+
 - Input data: VAERSSYMPOM data (2000~2018), [BioPortal HTML source](http://bioportal.bioontology.org/ontologies/MEDDRA/?p=classes&conceptid=root), [RESTful API](http://data.bioontology.org/documentation#nav_home)
 - R code: CleaningMeddraTerms.R
 - Output data: meddra_ptlist.csv (AE_NAME: AE names in VAERS; ID: MeDDRA ID for AE_NAME; MEDDRA_AE_NAME: new AE names with MEDDRA_ID)
