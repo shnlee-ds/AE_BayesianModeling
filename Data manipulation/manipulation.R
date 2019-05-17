@@ -8,7 +8,7 @@ library(dplyr)
 # clean and merge them 
 # Output: full_dds.csv
 #----------------------------------------------------------------
-setwd("Z:/He Yongqun/process data")
+setwd("/Users/shnlee/Desktop/RA")
 
 year=2000:2018
 
@@ -34,7 +34,11 @@ data_PAT$AGE=ifelse(is.na(CAGE), data_PAT$AGE_YRS, CAGE)
 dd_vac=NULL
 for (k in 1:length(year)){
   tmp=read.csv(paste('VAERS data/',year[k],"VAERSVAX",".csv",sep=""))
-  dd_vac[[k]]=tmp[,c("VAERS_ID","VAX_NAME","VAX_TYPE")]
+  vac.num=aggregate(x = tmp$VAERS_ID, by = list(tmp$VAERS_ID), FUN = "length", drop = FALSE)
+  names(vac.num) = c("VAERS_ID", "vac_num")
+  tmp = merge(tmp, vac.num, by="VAERS_ID")
+  dd_vac[[k]]=tmp[,c("VAERS_ID","VAX_NAME","VAX_TYPE", "vac_num")]
+  dd_vac[[k]]$year=year[k]
 }
 
 data_VAC=Reduce("rbind",dd_vac)
@@ -47,8 +51,12 @@ for (k in 1:length(year)){
   tmp=read.csv(paste('VAERS data/', year[k],"VAERSSYMPTOMS",".csv",sep=""))
   tmp=tmp[,c("VAERS_ID","SYMPTOM1","SYMPTOM2","SYMPTOM3","SYMPTOM4","SYMPTOM5")]
   tmp[tmp==""] = NA
-  tmp.long=melt(tmp, id.vars = c('VAERS_ID'), measure.vars = 2:6, na.rm = T, value.name = "AE_NAME")
-  dd_ae[[k]]=tmp.long
+  tmp=melt(tmp, id.vars = c('VAERS_ID'), measure.vars = 2:6, na.rm = T, value.name = "AE_NAME")
+  ae.num = aggregate(x = tmp$VAERS_ID, by = list(tmp$VAERS_ID), FUN = "length", drop = FALSE)
+  names(ae.num) = c("VAERS_ID", "ae_num")
+  tmp = merge(tmp, ae.num, by="VAERS_ID")
+  
+  dd_ae[[k]]=tmp
   dd_ae[[k]]$year=year[k]
 }
 data_ae=Reduce("rbind",dd_ae)
@@ -56,7 +64,7 @@ data_ae=data_ae[order(data_ae$VAERS_ID),]
 
 #length(unique(data_ae$AE_NAME))  > 8592
 
-meddra_ptlist = read.csv(paste('meddra data/','meddra_ptlist.csv',sep=""), header=T)
+meddra_ptlist = read.csv('meddra_ptlist.csv', header=T)
 meddra_ptlist = meddra_ptlist[complete.cases(meddra_ptlist),]
 data_AE = merge(data_ae, meddra_ptlist, by = 'AE_NAME', all.x = T)
 
@@ -64,10 +72,10 @@ data_AE = merge(data_ae, meddra_ptlist, by = 'AE_NAME', all.x = T)
 
 #### combine VAX-AE-PAT files
 dd_VAC_AE=merge(data_VAC,data_AE, by=c("VAERS_ID"))
-dd_VAC_AE_PAT=merge(dd_VAC_AE,data_PAT, by=c("VAERS_ID"),all.x = TRUE)
+dd_VAC_AE_PAT=merge(dd_VAC_AE,data_PAT, by=c("VAERS_ID"), all.x = TRUE)
 dds=dd_VAC_AE_PAT[order(dd_VAC_AE_PAT$VAERS_ID),]
 
-dds = dds %>% select(VAERS_ID, MEDDRA_AE_NAME, MEDDRA_ID, VAX_NAME, VAX_TYPE, year, AGE, SEX, STATE) 
+dds = dds %>% select(VAERS_ID, MEDDRA_AE_NAME, MEDDRA_ID, VAX_NAME, VAX_TYPE, year = year.x, AGE, SEX, STATE, vac_num, ae_num) 
 
 
 write.csv(dds, 'full_dds.csv', row.names = F)
