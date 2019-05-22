@@ -75,7 +75,7 @@ dd_VAC_AE=merge(data_VAC,data_AE, by=c("VAERS_ID"))
 dd_VAC_AE_PAT=merge(dd_VAC_AE,data_PAT, by=c("VAERS_ID"), all.x = TRUE)
 dds=dd_VAC_AE_PAT[order(dd_VAC_AE_PAT$VAERS_ID),]
 
-dds = dds %>% select(VAERS_ID, MEDDRA_AE_NAME, MEDDRA_ID, VAX_NAME, VAX_TYPE, year = year.x, AGE, SEX, STATE, vac_num, ae_num) 
+dds = dds %>% select(VAERS_ID, MEDDRA_AE_NAME, MEDDRA_ID, VAX_NAME, VAX_TYPE, year = year.x, AGE, NUMDAYS, SEX, STATE, vac_num, ae_num) 
 
 
 write.csv(dds, 'full_dds.csv', row.names = F)
